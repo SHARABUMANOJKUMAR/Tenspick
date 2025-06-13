@@ -1,14 +1,20 @@
 # === Imports ===
 from flask import Flask, render_template, request, redirect, flash, url_for, session, jsonify, Response
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
 import datetime
 import pandas as pd
 import io
 import openai
+import os
+import json
 from langdetect import detect
+from dotenv import load_dotenv
+from google.oauth2 import service_account
 
-# === App Config ===
+# === Load Environment Variables ===
+load_dotenv()
+
+# === Flask App Config ===
 app = Flask(__name__)
 app.secret_key = 'f033ac7b18ff3721e0c009ff263332ab'
 
@@ -16,13 +22,15 @@ app.secret_key = 'f033ac7b18ff3721e0c009ff263332ab'
 ADMIN_USERNAME = 'admin'
 ADMIN_PASSWORD = 'tenspick123'
 
-# === Google Sheets Setup ===
+# === Google Sheets Setup using ENV variable for Render ===
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds_path = 'google_sheets/credentials.json'
-creds = ServiceAccountCredentials.from_json_keyfile_name(creds_path, scope)
+creds_info = json.loads(os.getenv("GOOGLE_CREDS_JSON"))
+creds = service_account.Credentials.from_service_account_info(creds_info, scopes=scope)
 client = gspread.authorize(creds)
 spreadsheet_name = "Tenspick Data"
 sheet = client.open(spreadsheet_name).sheet1
+
+
 
 # === OpenAI Setup ===
 openai.api_key = "sk-..."  # Replace with your actual key
