@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Our Services | TensPick</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> 
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <!-- AOS CSS -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #0d6efd;
+      --bg-light: #f4f9ff;
+      --dark-bg: #121212;
+      --light-text: #f8f9fa;
+      --dark-text: #212529;
+      --gradient: linear-gradient(45deg, #0d6efd, #6610f2);
+    }
+
+    body {
+      background-color: var(--bg-light);
+      font-family: 'Poppins', sans-serif;
+      transition: background-color 0.4s, color 0.4s;
+    }
+
+    .dark-mode {
+      background-color: var(--dark-bg);
+      color: var(--light-text);
+    }
+
+    /* Navbar */
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      padding: 15px 0;
+      background: var(--gradient);
+      list-style: none;
+      margin: 0;
+    }
+
+    .nav-link-animate {
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      color: #fff;
+      position: relative;
+    }
+
+    .nav-link-animate::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 2px;
+      left: 0;
+      bottom: -4px;
+      background-color: #fff;
+      transition: 0.3s;
+    }
+
+    .nav-link-animate:hover::after {
+      width: 100%;
+    }
+
+    .theme-btn {
+      background: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 30px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .theme-btn:hover {
+      background-color: #e0e0e0;
+    }
+
+    .heading {
+      font-size: 2.8rem;
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .services-section {
+      padding: 50px 15px;
+    }
+
+    .service-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      transition: all 0.4s ease;
+    }
+
+    .service-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 32px rgba(13, 110, 253, 0.3);
+    }
+
+    .icon-box {
+      font-size: 45px;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: transform 0.3s ease;
+    }
+
+    .service-card:hover .icon-box {
+      transform: rotate(10deg) scale(1.2);
+    }
+
+    .service-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin: 10px 0;
+    }
+
+    .service-description {
+      font-size: 0.95rem;
+      color: #6c757d;
+    }
+
+    .counter {
+      font-size: 2.2rem;
+      font-weight: 700;
+    }
+
+    /* Floating Buttons */
+    .whatsapp-float, .call-float {
+      position: fixed;
+      z-index: 1000;
+      border-radius: 50%;
+      padding: 15px;
+      font-size: 24px;
+      color: white;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s;
+    }
+
+    .whatsapp-float {
+      bottom: 80px;
+      right: 20px;
+      background-color: #25d366;
+    }
+
+    .whatsapp-float:hover {
+      background-color: #1ebea5;
+      transform: scale(1.1);
+    }
+
+    .call-float {
+      bottom: 20px;
+      right: 20px;
+      background-color: var(--primary);
+    }
+
+    .call-float:hover {
+      background-color: #0a58ca;
+      transform: scale(1.1);
+    }
+
+    footer {
+      background-color: #212529;
+      color: #ccc;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navigation Bar -->
+  <ul class="nav-links">
+    <li><a href="{{ url_for('home') }}" class="nav-link-animate">🏠 Home</a></li>
+    <li><a href="{{ url_for('services') }}" class="nav-link-animate">💼 Services</a></li>
+    <li><a href="{{ url_for('contact') }}" class="nav-link-animate">📞 Contact</a></li>
+    <li><button onclick="toggleTheme()" class="theme-btn" title="Toggle Dark Mode">🌙</button></li>
+  </ul>
+
+  <!-- Services Section -->
+  <section class="services-section">
+    <div class="container">
+      <h1 class="heading" data-aos="fade-down">💼 Our Services</h1>
+      <div class="row g-4 mt-4">
+        {% for service in services %}
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+          <div class="card service-card text-center">
+            <div class="icon-box"><i class="{{ service.icon }}"></i></div>
+            <div class="service-title">{{ service.title }}</div>
+            <div class="service-description">{{ service.description }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Counters Section -->
+  <section class="bg-white py-5 mt-5">
+    <div class="container text-center">
+      <div class="row g-4">
+        <div class="col-md-3"><h2 class="counter text-primary" data-target="150">0</h2><p>Projects Completed</p></div>
+        <div class="col-md-3"><h2 class="counter text-success" data-target="95">0</h2><p>Happy Clients</p></div>
+        <div class="col-md-3"><h2 class="counter text-danger" data-target="30">0</h2><p>Team Members</p></div>
+        <div class="col-md-3"><h2 class="counter text-warning" data-target="50">0</h2><p>Brand Partners</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+<!-- Testimonials -->
+<section class="py-5" style="background: linear-gradient(to right, #e0f7fa, #e3f2fd); position: relative; overflow: hidden;">
+  <div class="container position-relative">
+    <!-- Lottie Background Animation -->
+    <div style="position: absolute; top: -50px; right: -50px; width: 300px; height: 300px; z-index: 0;">
+      <lottie-player src="https://assets9.lottiefiles.com/private_files/lf30_qnpfavmd.json" background="transparent" speed="1" loop autoplay></lottie-player>
+    </div>
+
+    <h2 class="text-center text-dark mb-5" data-aos="zoom-in" style="font-size: 2.5rem;">
+      🌟 What Our Clients Say <span style="font-size: 2rem;">✨</span>
+    </h2>
+
+    <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner text-center">
+        <!-- Testimonial 1 -->
+        <div class="carousel-item active">
+          <div class="p-4 shadow rounded bg-white mx-auto" style="max-width: 700px;" data-aos="fade-up">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzHn4u-pDdjsPJsu9QD-F8X8N3aNXfgU0wMw&s" class="mb-3 rounded-circle" width="80" alt="User">
+            <h5 class="fw-bold">PRABASH</h5>
+            <p class="text-muted">Startup Founder 🚀</p>
+            <p class="fst-italic">"TensPick delivered our website faster than expected and it looks amazing! 🌐"</p>
+            <div style="color: #ffc107; font-size: 1.4rem;">⭐⭐⭐⭐⭐</div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="carousel-item">
+          <div class="p-4 shadow rounded bg-white mx-auto" style="max-width: 700px;" data-aos="fade-up">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrVfzzFf8KaUwCMOkKGOItFIU9If5uG6o2KA&s" class="mb-3 rounded-circle" width="80" alt="User">
+            <h5 class="fw-bold">Anushka shetty</h5>
+            <p class="text-muted">Interior Designer 🎨</p>
+            <p class="fst-italic">"Amazing team with a strong eye for design. Loved their work! 💡"</p>
+            <div style="color: #ffc107; font-size: 1.4rem;">⭐⭐⭐⭐⭐</div>
+          </div>
+        </div> 
+
+        <!-- Testimonial 3 -->
+        <div class="carousel-item">
+          <div class="p-4 shadow rounded bg-white mx-auto" style="max-width: 700px;" data-aos="fade-up">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw6Y5aCLGTG1VDYxo4IrTrn2UgVdS5QIaC5g&s" class="mb-3 rounded-circle" width="80" alt="User">
+            <h5 class="fw-bold">Sneha Verma</h5>
+            <p class="text-muted">YouTube Creator 🎥</p>
+            <p class="fst-italic">"They handled everything from branding to development. Highly recommend 💯"</p>
+            <div style="color: #ffc107; font-size: 1.4rem;">⭐⭐⭐⭐⭐</div>
+          </div>
+        </div>
+
+        <!-- Testimonial 4 -->
+        <div class="carousel-item">
+          <div class="p-4 shadow rounded bg-white mx-auto" style="max-width: 700px;" data-aos="fade-up">
+            <h5 class="fw-bold">Aarav Patel</h5>
+            <p class="text-muted">Tech Consultant 💻</p>
+            <p class="fst-italic">"Professional, creative, and efficient – everything you want in a digital partner. 🌈"</p>
+            <div style="color: #ffc107; font-size: 1.4rem;">⭐⭐⭐⭐⭐</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carousel Controls -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Confetti JS (Celebration effect) -->
+  <canvas id="confetti-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></canvas>
+</section>
+
+<!-- Scripts for Lottie and Confetti -->
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+  // Trigger confetti on load
+  window.addEventListener('load', () => {
+    confetti({
+      particleCount: 120,
+      spread: 80,
+      origin: { y: 0.6 },
+      colors: ['#0d6efd', '#ffc107', '#28a745'],
+    });
+  });
+</script>
+
+  <!-- CTA -->
+  <section class="py-5 text-white" style="background: var(--gradient);">
+    <div class="container text-center">
+      <h2 class="mb-3" data-aos="zoom-in">🚀 Ready to Elevate Your Business?</h2>
+      <p class="mb-4" data-aos="fade-up">Contact TensPick now and let's build something amazing together!</p>
+      <a href="/contact" class="btn btn-light btn-lg px-5 py-2" data-aos="zoom-in-up">Contact Us Now</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="pt-4 pb-3 text-center">
+    <div class="container">
+      <p>© 2025 TensPick. All rights reserved.</p>
+      <p><i class="fas fa-envelope"></i> tenspickindia@gmail.com | <i class="fas fa-phone-alt"></i> +91 7330863893</p>
+      <p><i class="fas fa-map-marker-alt"></i> Tirupati, Tirupati District, Andhra Pradesh</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init();
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+      counter.innerText = '0';
+      const updateCounter = () => {
+        const target = +counter.getAttribute('data-target');
+        const current = +counter.innerText;
+        const increment = target / 100;
+        if (current < target) {
+          counter.innerText = `${Math.ceil(current + increment)}`;
+          setTimeout(updateCounter, 25);
+        } else {
+          counter.innerText = target;
+        }
+      };
+      updateCounter();
+    });
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark-mode');
+    }
+  </script>
+
+  <!-- Floating Buttons -->
+  <a href="https://wa.me/917330863893" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+  
+
+
+  <a href="tel:+917330863893" class="call-float"><i class="fas fa-phone"></i></a><br><br>
+
+</body>
+</html>

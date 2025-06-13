@@ -1,0 +1,273 @@
+{% extends 'layout.html' %}
+
+{% block title %}Home | TensPick{% endblock %}
+
+{% block content %}
+<!-- Enhanced Hero Section: Vibrant Gradient + Scroll-Triggered Lottie -->
+<section
+  class="hero position-relative text-white"
+  style="
+    background: linear-gradient(135deg, #6610f2 0%, #20c997 100%);
+    overflow: hidden;
+    transition: background 1s ease-in-out;
+  "
+>
+  <div class="container py-6">
+    <div class="row align-items-center">
+
+      <!-- Left Text: Gradient + Hover Accent -->
+      <div class="col-lg-6 text-center text-lg-start animate__animated animate__fadeInLeft">
+        <h1 class="display-3 fw-bold mb-3">
+          Welcome to <span class="text-gradient">TENSPICK</span>
+        </h1>
+        <p class="lead fw-medium mb-4">
+          Cutting-edge web, mobile & AI solutions that dazzle and convert.
+        </p>
+        <button
+          class="btn btn-lg px-5 py-3 btn-gradient shadow-sm"
+          onclick="window.location.href='{{ url_for('services') }}'"
+        >
+          🚀 Explore Services
+        </button>
+      </div>
+
+      <!-- Right Lottie Animation (Scroll Controlled) -->
+      <div class="col-lg-6 text-center animate__animated animate__fadeInRight">
+        <div class="lottie-wrapper" style="will-change: transform; overflow: visible;">
+          <lottie-player
+            id="scrollLottie"
+            src="https://assets10.lottiefiles.com/packages/lf20_x62chJ.json"
+            background="transparent"
+            speed="1"
+            style="width: 100%; max-width: 400px; height: auto;"
+            loop
+          ></lottie-player>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Custom Styles for Text, Button & Hover Effects -->
+<style>
+  .text-gradient {
+    background: linear-gradient(to right, #ffe259, #ffa751);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .btn-gradient {
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+    color: #fff;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: transform 0.4s, box-shadow 0.4s;
+  }
+
+  .btn-gradient:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .lottie-wrapper {
+    display: inline-block;
+    transition: transform 0.4s ease;
+  }
+
+  .lottie-wrapper:hover {
+    transform: scale(1.1) rotate(-3deg);
+  }
+</style>
+
+<!-- Lottie Player Script -->
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+<!-- Scroll-Triggered Lottie Animation Activation -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const lottieEl = document.getElementById('scrollLottie');
+    if (!lottieEl) return;
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          lottieEl.play();
+        } else {
+          lottieEl.pause();
+        }
+      });
+    }, { threshold: 0.7 });
+
+    observer.observe(lottieEl);
+  });
+</script>
+
+
+
+
+<!-- AI Assistant Section -->
+<section class="container my-5">
+  <div class="text-center mb-4">
+    <h2 class="fw-bold">🤖 AI Assistant</h2>
+    <p class="text-muted">Multilingual AI Chatbot with Voice-to-Voice Support</p>
+  </div>
+
+  <div class="card shadow-lg mx-auto" style="max-width: 600px; border-radius: 20px;">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">TENSPICK AI Chat</h5>
+      <button class="btn-close btn-close-white" onclick="document.getElementById('chat-box').style.display='none';"></button>
+    </div>
+
+    <div id="chat-box" class="card-body" style="height: 300px; overflow-y: auto; background: #f5f5f5;">
+      <div class="mb-2"><strong>AI:</strong> Hello! 👋 How can I assist you today?</div>
+    </div>
+
+    <div class="card-footer bg-white d-flex align-items-center">
+      <button id="voiceBtn" class="btn btn-outline-secondary me-2"><h2>🎙️</h2></button>
+      <input type="text" id="chatInput" class="form-control me-2" placeholder="Type your message..." />
+      <select id="languageSelect" class="form-select me-2" style="width: auto;">
+        <option value="en">English</option>
+        <option value="hi">Hindi</option>
+        <option value="te">Telugu</option>
+      </select>
+      <button id="sendBtn" class="btn btn-primary animate__animated animate__pulse animate__infinite">Send</button>
+    </div>
+  </div>
+</section>
+
+<!-- Optional AI Button for Voice Only -->
+<section class="container text-center my-4">
+  <button onclick="startListening()" class="btn btn-dark">🎤 Ask AI</button>
+  <div id="ai-response" class="mt-2 text-success fw-bold"></div>
+</section>
+
+<!-- JS Script: Chat, Typing Animation, Voice, Multilingual -->
+<script>
+  const chatBox = document.getElementById('chat-box');
+  const sendBtn = document.getElementById('sendBtn');
+  const input = document.getElementById('chatInput');
+  const voiceBtn = document.getElementById('voiceBtn');
+  const langSelect = document.getElementById('languageSelect');
+
+  // Typing animation
+  function typeMessage(text, speed = 50) {
+    return new Promise((resolve) => {
+      let index = 0;
+      const div = document.createElement('div');
+      div.innerHTML = "<strong>AI:</strong> ";
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      function type() {
+        if (index < text.length) {
+          div.innerHTML += text.charAt(index);
+          index++;
+          chatBox.scrollTop = chatBox.scrollHeight;
+          setTimeout(type, speed);
+        } else {
+          resolve();
+        }
+      }
+      type();
+    });
+  }
+
+  // Add user message
+  function addMessage(sender, text) {
+    const div = document.createElement('div');
+    div.innerHTML = `<strong>${sender}:</strong> ${text}`;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  // Translate message using Google Translate API (frontend example)
+  async function translateText(text, targetLang) {
+    if (targetLang === 'en') return text;
+
+    const encodedText = encodeURIComponent(text);
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${targetLang}&dt=t&q=${encodedText}`;
+    
+    const res = await fetch(url);
+    const data = await res.json();
+    return data[0][0][0];
+  }
+
+  // Send user message to Flask backend and receive reply
+  async function sendMessage(msg) {
+    if (!msg) return;
+
+    const lang = langSelect.value;
+    const translatedInput = await translateText(msg, 'en'); // Always send in English
+    addMessage("You", msg);
+
+    const response = await fetch('/submit_chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: translatedInput })
+    });
+
+    const data = await response.json();
+    const replyInUserLang = await translateText(data.reply, lang);
+    
+    await typeMessage(replyInUserLang);
+
+    const utterance = new SpeechSynthesisUtterance(replyInUserLang);
+    utterance.lang = lang === 'hi' ? 'hi-IN' : lang === 'te' ? 'te-IN' : 'en-IN';
+    speechSynthesis.speak(utterance);
+
+    document.getElementById('ai-response').innerText = "AI: " + replyInUserLang;
+  }
+
+  // Button click handler
+  sendBtn.onclick = () => {
+    const msg = input.value.trim();
+    input.value = "";
+    sendMessage(msg);
+  };
+
+  // Voice input in AI Chat Card
+  voiceBtn.addEventListener('click', () => {
+    try {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-IN';
+      recognition.interimResults = false;
+
+      recognition.start();
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        input.value = transcript;
+        sendMessage(transcript);
+      };
+
+      recognition.onerror = (event) => {
+        alert('🎤 Voice error: ' + event.error);
+      };
+    } catch (err) {
+      alert("Voice Recognition not supported in this browser.");
+    }
+  });
+
+  // Optional floating Ask AI button
+  function startListening() {
+    try {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-IN';
+      recognition.interimResults = false;
+
+      recognition.start();
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        sendMessage(transcript);
+      };
+
+      recognition.onerror = (event) => {
+        alert('🎤 Voice error: ' + event.error);
+      };
+    } catch (err) {
+      alert("Voice Recognition not supported in this browser.");
+    }
+  }
+</script>
+
+{% endblock %}

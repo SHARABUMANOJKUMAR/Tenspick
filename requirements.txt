@@ -1,0 +1,14 @@
+Flask
+gspread
+oauth2client
+speechrecognition
+pyttsx3
+nltk
+scikit-learn
+transformers
+googletrans==4.0.0rc1
+twilio
+pandas
+httpx>=0.23.0
+openai
+langdetect
